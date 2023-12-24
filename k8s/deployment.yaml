@@ -14,11 +14,10 @@ spec:
     spec:
       containers:
       - name: telegram-bot-container
-        image: your-image-name:your-image-tag
-        ports:
-        - containerPort: 80
+        image: thakorrohan/cat:latest
         env:
         - name: BOT_TOKEN
+        - name: CAT_API_KEY
           valueFrom:
             secretKeyRef:
               name: telegram-bot-secret
