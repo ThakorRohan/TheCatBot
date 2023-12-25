@@ -1,0 +1,47 @@
+pipeline {
+    agent {
+        label 'eks-cluster' // Label for the Jenkins agent in the Kubernetes cloud configuration
+    }
+
+    stages {
+        stage('Fetching The Repo') {
+            steps {
+                git(url: "https://github.com/ThakorRohan/TheCatBot", branch: "main")
+            }
+        }
+
+    stage('Building The Docker Image') {
+        steps {
+                sh "docker build . -t cat"
+            }
+        }
+
+    stage("Logging into DockerHub") {
+        steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'dockerhubPassword', usernameVariable: 'dockerHubUser')]) {
+                    sh "docker login -u ${env.dockerHubUser} -p ${env.dockerhubPassword}"
+                }
+            }
+        }
+
+    stage("Pushing The Dockerfile to DockerHub") {
+        steps {
+                echo "Pushing The Dockerfile to DockerHub"
+                sh "docker push thakorrohan/cat:latest"
+            }
+        }
+        
+        stage('Delete Service and Redeploy') {
+            steps {
+                script {
+                    // Delete the Kubernetes service with sudo
+                    sh 'kubectl delete service telegram-bot-deployment --ignore-not-found=true'
+                    
+                    // Deploy the Kubernetes resources with sudo
+                    sh 'kubectl apply -f k8s/secret.yaml'
+                    sh 'kubectl apply -f k8s/deployment.yaml'
+                }
+            }
+        }
+    }
+}
