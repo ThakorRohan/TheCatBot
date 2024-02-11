@@ -5,7 +5,7 @@ Welcome to the CatBot repository! CatBot is an engaging Telegram bot designed to
 ## Project Structure
 
 - `main.py`: The core Python script powering the CatBot.
-- `requirements.txt`: Contains all necessary Python dependencies.
+- `requirements.txt`: Contains all necessary Python dependencies.a
 - `Dockerfile`: Docker instructions to build the bot's image.
 - `k8s/`: Kubernetes deployment manifests for orchestrating the bot on a cluster.
 
